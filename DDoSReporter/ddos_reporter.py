@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
-# import envia_email # envia_email.send_mail(atk)
 # import sysadm_controle# sysadm_controle.cadastrar_sysadm() # sysadm_controle.remover_sysadm()
+import send_email
 import time
 import re
 import settings
@@ -14,6 +14,9 @@ class Ddos_reporter():
         print '\nMonitorando...'
         #Capturando tamanho do arquivo para ler a partir do próximo bloco de bytes
         fileBytePos = os.path.getsize(settings.ARQUIVO_DE_LOG)
+
+        #Objeto que enviará emails caso haja um ataque
+        email_sender = send_email.Send_Email()
 
         while True:
             with open(settings.ARQUIVO_DE_LOG, 'r') as _file:
@@ -54,8 +57,20 @@ class Ddos_reporter():
                             ips.append(ip)
                         ips = ', '.join(ips)
                         print 'Ataque DDoS - IPs:', ips
+                        print 'Enviando email para o(s) SYSADM(s)...'
+                        if len(settings.SYSADM) == 0:
+                            print 'Nenhum email de SYSADM cadastrado'
+                        else:
+                            for email in settings.SYSADM:
+                                email_sender.send_email(email, ipcounter, 1)
                     else:
                         print 'Ataque DoS - IP', ipcounter[0]
+                        print 'Enviando email para o(s) SYSADM(s)...'
+                        if len(settings.SYSADM) == 0:
+                            print 'Nenhum email de SYSADM cadastrado'
+                        else:
+                            for email in settings.SYSADM:
+                                email_sender.send_email(email, ipcounter[0], 0)
 
                 #Saltar uma linha
                 if data != '':
@@ -80,12 +95,9 @@ class Ddos_reporter():
         print 'SYSADMs:', sysadms
         print 'Limite de requisições para um único IP:', settings.LIMITE_REQUISICOES_POR_IP
         print 'Limite de requisições distintas para o servidor:', settings.LIMITE_REQUISICOES_TOTAL
-        print 'Iptables Forward:', settings.BLOQUEAR_ATAQUES_FORWARD
-        print 'Iptables Input:', settings.BLOQUEAR_ATAQUES_INPUT
-        if settings.BLOQUEAR_ATAQUES_FORWARD:
-            print 'Regra iptables Forward:', settings.IPTABLES_FORWARD
-        if settings.BLOQUEAR_ATAQUES_INPUT:
-            print 'Regra iptables Input:', settings.IPTABLES_INPUT
+        print 'Iptables:', settings.BLOQUEAR_ATAQUES
+        if settings.BLOQUEAR_ATAQUES:
+            print 'Regra iptables:', settings.IPTABLES
 
 if __name__== "__main__":
     monitor = Ddos_reporter()
