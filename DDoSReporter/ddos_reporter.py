@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
-import envia_email # envia_email.send_mail(atk)
-import sysadm_controle# sysadm_controle.cadastrar_sysadm() # sysadm_controle.remover_sysadm()
+# import envia_email # envia_email.send_mail(atk)
+# import sysadm_controle# sysadm_controle.cadastrar_sysadm() # sysadm_controle.remover_sysadm()
 import time
 import re
 import settings
