@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: cp860 -*- 
 
 import getpass

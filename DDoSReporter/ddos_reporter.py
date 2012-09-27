@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
-# import sysadm_controle# sysadm_controle.cadastrar_sysadm() # sysadm_controle.remover_sysadm()
 import send_email
 import time
 import re
 import settings
 import os
+import argparse
 
 class Ddos_reporter():
 
@@ -17,6 +17,13 @@ class Ddos_reporter():
 
         #Objeto que enviará emails caso haja um ataque
         email_sender = send_email.Send_Email()
+
+        #Dicionário de bloqueados
+        ipsBloqueados = {}
+
+        #Ultimos ataques
+        ultimoDoS = ''
+        ultimoDDoS = ''
 
         while True:
             with open(settings.ARQUIVO_DE_LOG, 'r') as _file:
@@ -31,12 +38,12 @@ class Ddos_reporter():
                 access_list = re.findall(r'(.+?) .+?\n', data)
                
                 #Verifica se house um estouro no limite de requisições possíveis por segundo
-                if len(access_list) > settings.LIMITE_REQUISICOES_TOTAL:
+                if len(set(access_list)) > settings.LIMITE_REQUISICOES_TOTAL:
                     ips = []
                     for ip in set(access_list):
                         ips.append(ip)
                     ips = ', '.join(ips)
-                    print 'Estouro do limite de {} requisições por segundo (Ataque DDoS)\nIPs:'.format(
+                    print '\033[1;31mATENÇÃO\033[0m - Estouro do limite de {} requisições por segundo (Ataque DDoS)\nIPs:'.format(
                         settings.LIMITE_REQUISICOES_TOTAL), ips
 
                 #Contando numero de requisições para cada IP
@@ -44,36 +51,65 @@ class Ddos_reporter():
                 for ip in set(access_list):
                     total = access_list.count(ip)
                     if total > settings.LIMITE_REQUISICOES_POR_IP:
-                        print 'IP:', ip, 'TOTAL:', access_list.count(ip), 'ALERTA DE ATAQUE'
+                        if args.verbose:
+                            print ip, '- Total:', total, '\033[0;31m(Ataque detectado)\033[0m'
                         ipcounter.append(ip)
                     else:
-                        print 'IP:', ip, 'TOTAL:', access_list.count(ip)
+                        if args.verbose:
+                            print ip, '- Total:', total
                 
-                #Define tipo de ataque
-                if len(ipcounter) > 0 and len(access_list) < settings.LIMITE_REQUISICOES_TOTAL:
+                #Define tipo de ataque                
+                if len(ipcounter) > 0: #and len(access_list) <= settings.LIMITE_REQUISICOES_TOTAL:
+                    #Ataque DDoS---------------------------
                     if len(ipcounter) > 1:
                         ips = []
                         for ip in set(ipcounter):
                             ips.append(ip)
                         ips = ', '.join(ips)
-                        print 'Ataque DDoS - IPs:', ips
-                        print 'Enviando email para o(s) SYSADM(s)...'
-                        if len(settings.SYSADM) == 0:
-                            print 'Nenhum email de SYSADM cadastrado'
-                        else:
-                            for email in settings.SYSADM:
-                                email_sender.send_email(email, ipcounter, 1)
+                        if ultimoDDoS != ips:
+                            print '\033[1;31mAlerta de ataque DDoS\033[0m - \033[1;32mIPs:', ips,'\033[0m'
+                        ultimoDDoS = ips
+
+                        #Bloqueando Ataque
+                        if settings.BLOQUEAR_ATAQUES:
+                            for ip in ipcounter:
+                                if not ipsBloqueados.has_key(ip):
+                                    if os.system(re.sub(r'<ip>', ip, settings.IPTABLES)) == 0:
+                                        ipsBloqueados[ip] = 'Bloqueando'
+                                        print 'IP {} bloqueado'.format(ip)
+
+                        #Enviando Email
+                        if settings.SEND_EMAIL:
+                            print 'Enviando email para o(s) SYSADM(s)...'
+                            if len(settings.SYSADM) == 0:
+                                print 'Nenhum email de SYSADM cadastrado'
+                            else:
+                                for email in settings.SYSADM:
+                                    email_sender.send_email(email, ipcounter, 1)
                     else:
-                        print 'Ataque DoS - IP', ipcounter[0]
-                        print 'Enviando email para o(s) SYSADM(s)...'
-                        if len(settings.SYSADM) == 0:
-                            print 'Nenhum email de SYSADM cadastrado'
-                        else:
-                            for email in settings.SYSADM:
-                                email_sender.send_email(email, ipcounter[0], 0)
+                        #Ataque DoS------------------------
+                        if ultimoDoS != ipcounter[0]:
+                            print '\033[1;31mAlerta de ataque DoS\033[0m - \033[1;32mIP:', ipcounter[0],'\033[0m'
+                        ultimoDoS = ipcounter[0]
+                        
+                        #Bloqueando Ataque
+                        if settings.BLOQUEAR_ATAQUES:
+                            if not ipsBloqueados.has_key(ipcounter[0]):
+                                if os.system(re.sub(r'<ip>', ipcounter[0], settings.IPTABLES)) == 0:
+                                    ipsBloqueados[ipcounter[0]] = 'Bloqueando'
+                                    print 'IP {} bloqueado'.format(ipcounter[0])
+
+                        #Enviando Email
+                        if settings.SEND_EMAIL:
+                            print 'Enviando email para o(s) SYSADM(s)...'
+                            if len(settings.SYSADM) == 0:
+                                print 'Nenhum email de SYSADM cadastrado'
+                            else:
+                                for email in settings.SYSADM:
+                                    email_sender.send_email(email, ipcounter[0], 0)
 
                 #Saltar uma linha
-                if data != '':
+                if data != '' and args.verbose:
                     print ''
 
                 #Tamanho atual do arquivo
@@ -87,19 +123,25 @@ class Ddos_reporter():
                     exit()
             
     def print_settings(self):
-        print 'Arquivo de log:',settings.ARQUIVO_DE_LOG
+        print '\n\033[1;31m ATENÇÃO - EXECUTE COMO SUPERUSUÁRIO (ROOT)\033[0;33m\n'
+        print '\033[0;36m Arquivo de log:\033[0;33m',settings.ARQUIVO_DE_LOG
         sysadms = []
         for email in settings.SYSADM:
             sysadms.append(email)
         sysadms = ', '.join(sysadms)
-        print 'SYSADMs:', sysadms
-        print 'Limite de requisições para um único IP:', settings.LIMITE_REQUISICOES_POR_IP
-        print 'Limite de requisições distintas para o servidor:', settings.LIMITE_REQUISICOES_TOTAL
-        print 'Iptables:', settings.BLOQUEAR_ATAQUES
+        print '\033[0;36m SYSADMs:\033[0;33m', sysadms
+        print '\033[0;36m Limite de requisições para um único IP:\033[0;33m', settings.LIMITE_REQUISICOES_POR_IP
+        print '\033[0;36m Limite de requisições distintas para o servidor:\033[0;33m', settings.LIMITE_REQUISICOES_TOTAL
+        print '\033[0;36m Bloquear ataques:\033[0;33m', settings.BLOQUEAR_ATAQUES
         if settings.BLOQUEAR_ATAQUES:
-            print 'Regra iptables:', settings.IPTABLES
+            print '\033[0;36m Regra iptables:\033[0;33m', settings.IPTABLES
+        print '\033[0m'
 
 if __name__== "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', dest='verbose', action="store_true", help='Prints every access', default=False)
+    args = parser.parse_args()
+
     monitor = Ddos_reporter()
     monitor.print_settings()
     monitor.start_monitoring()
