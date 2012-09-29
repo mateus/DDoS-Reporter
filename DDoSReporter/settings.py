@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 
 #True para enviar emails, False para não enviar
-SEND_EMAIL = False
+SEND_EMAIL = True
 
 #Email(gmail) e senha do email que enviará o alerta de ataques (servidor)
 EMAIL_PASSWORD = ('email@gmail.com', 'senha')

@@ -10,12 +10,16 @@ from email.MIMEText import MIMEText
 from email.Utils import formatdate
 
 class Send_Email():
+    '''
+    Class to send email to Gmail domain
+    '''
 
     def email_validator(self, email):
         '''
         Validates an email using regular expression 
 
-        Args: email (str) - Email
+        Args: 
+            email (str) - Email
 
         Return 1 for valid email and 0 for invalid
         '''
@@ -30,7 +34,10 @@ class Send_Email():
         '''
         Send an email alert informing DDoS / Dos
 
-        Args: atk (int) - Type of attack detected (0->DoS, 1->DDoS)
+        Args:
+            email (str) - SYSADM email
+            ips (str) - List of the ips detected
+            atk (int) - Type of attack detected (0->DoS, 1->DDoS)
         '''
 
         #Verifica email do SYSADM
@@ -57,7 +64,7 @@ class Send_Email():
                         message.append(
                             '\n\nO IP foi bloquado seguindo a regra de iptables \"{}\".'.format(settings.IPTABLES))
                     message.append(
-                        '\n\n\tEsta mensagem foi gerada automaticamente pelo sistema, não responda este e-mail.')
+                        '\n\niptables -D INPUT <numero>\tEsta mensagem foi gerada automaticamente pelo sistema, não responda este e-mail.')
                     message = ''.join(message)
                     msg.attach( MIMEText(message) )
                 elif atk == 1:
@@ -83,7 +90,15 @@ class Send_Email():
                     server.ehlo()
                     server.login(settings.EMAIL_PASSWORD[0], settings.EMAIL_PASSWORD[1])
                     server.sendmail(settings.EMAIL_PASSWORD[0], email, msg.as_string())
-                    print 'Email enviado para {}'.format(email)
+                    if atk == 0:
+                        ipEnviar = ips
+                    else:
+                        ipEnviar = []
+                        for ip in ips:
+                            ipEnviar.append(ip)
+                        ipEnviar = ', '.join(ipEnviar)
+                                            
+                    print 'Email enviado para {} sobre o ataque dos IPs: {}'.format(email, ipEnviar)
                 except:
                     print 'Falha ao enviar email'
                 finally:
