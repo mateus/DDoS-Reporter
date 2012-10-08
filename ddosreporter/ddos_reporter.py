@@ -14,8 +14,10 @@ from version import get_version
 
 class Ddos_reporter():
     '''
-    Monitor DoS and DDoS based on data from the access log of the web server Apache. 
-    It counts the number of requests and then it can block the IPs or only send alerts.
+    Monitor DoS and DDoS based on data from the access log of the web server 
+    Apache.\n
+    It counts the number of requests and then it can block the IPs or only 
+    send alerts.
     '''
 
     def start_monitoring(self):
@@ -23,7 +25,8 @@ class Ddos_reporter():
         Starts monitoring by capturing data from the log access
         '''
         print '\nMonitorando...'
-        #Capturando tamanho do arquivo para ler a partir do próximo bloco de bytes
+        #Capturando tamanho do arquivo para ler a partir do próximo bloco de 
+        #bytes
         fileBytePos = os.path.getsize(settings.ARQUIVO_DE_LOG)
 
         #Objeto que enviará emails caso haja um ataque
@@ -32,7 +35,8 @@ class Ddos_reporter():
         #Objeto que atualiza o arquivo de log do ddosreporter
         fw = file_writer.File_writer()
 
-        #Dicionário de bloqueados (Somente na execução atual do programa, não contém registros anteriores)
+        #Dicionário de bloqueados (Somente na execução atual do programa, não 
+        #contém registros anteriores)
         ipsBloqueados = {}
 
         #Ultimos ataques sofridos 
@@ -51,7 +55,8 @@ class Ddos_reporter():
                 #Capturando somente o(s) IP(s) de cada cliente
                 access_list = re.findall(r'(.+?) .+?\n', data)
                
-                #Verifica se house um estouro no limite de requisições possíveis por segundo
+                #Verifica se house um estouro no limite de requisições possíveis
+                #por segundo
                 if len(set(access_list)) > settings.LIMITE_REQUISICOES_TOTAL:
                     ips = []
                     for ip in set(access_list):
@@ -73,7 +78,7 @@ class Ddos_reporter():
                             print ip, '- Total:', total
                 
                 #Define tipo de ataque                
-                if len(ipcounter) > 0: #and len(access_list) <= settings.LIMITE_REQUISICOES_TOTAL:
+                if len(ipcounter) > 0: 
                     #Ataque DDoS---------------------------
                     if len(ipcounter) > 1:
                         ips = []

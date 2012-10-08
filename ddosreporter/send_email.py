@@ -35,8 +35,8 @@ class Send_Email():
         Send an email alert informing DDoS / Dos
 
         Args:
-            email (str) - SYSADM email
-            ips (str) - List of the ips detected
+            email (str) - SYSADM email\n
+            ips (str) - List of the ips detected\n
             atk (int) - Type of attack detected (0->DoS, 1->DDoS)
         '''
 
