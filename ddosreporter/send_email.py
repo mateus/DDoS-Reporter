@@ -21,7 +21,7 @@ class Send_Email():
         Args: 
             email (str) - Email
 
-        Return 1 for valid email and 0 for invalid
+        Returns 1 for valid email and 0 for invalid
         '''
 
         #Verifica integridade do email
