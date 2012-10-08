@@ -1,4 +1,4 @@
-DDoS-Reporter
+DDoS-Reporter (English)
 =============
 
 Unfinished.
@@ -13,7 +13,9 @@ Attention:
 
 Configure the file settings.py previously.
 
--
+--
+DDoS-Reporter (Português)
+=============
 
 Não finalizado.
 
