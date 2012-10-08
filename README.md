@@ -22,4 +22,5 @@ Detecta ataques e baseando-se nos IPs do reconhecidos o DDoSReporter pode enviar
 SYSADMs cadastrados e/ou bloquear o acesso do(s) mesmo(s) seguindo uma regra de 'iptables'.
 
 Atenção:
+
 Configure os emails do arquivo settings.py corretamente antes de testar o código.
