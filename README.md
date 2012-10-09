@@ -4,6 +4,7 @@ DDoS-Reporter (English)
 Unfinished.
 
 Author: Mateus Ferreira Silva
+
 Date: oct/2012
 
 DDoS/Dos monitor using the access log file from apache web server.
@@ -25,6 +26,7 @@ DDoS-Reporter (Português)
 Não finalizado.
 
 Autor: Mateus Ferreira Silva
+
 Data: out/2012
 
 Monitor de DDoS/Dos utilizando o log de acesso do servidor web apache.
