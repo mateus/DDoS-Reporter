@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import send_email
 import time
@@ -12,11 +12,12 @@ import file_writer
 from multiprocessing import Process
 from version import get_version
 
+
 class Ddos_reporter():
     '''
-    Monitor DoS and DDoS based on data from the access log of the web server 
+    Monitor DoS and DDoS based on data from the access log of the web server
     Apache.\n
-    It counts the number of requests and then it can block the IPs or only 
+    It counts the number of requests and then it can block the IPs or only
     send alerts.
     '''
 
@@ -25,7 +26,7 @@ class Ddos_reporter():
         Starts monitoring by capturing data from the log access
         '''
         print '\nMonitorando...'
-        #Capturando tamanho do arquivo para ler a partir do próximo bloco de 
+        #Capturando tamanho do arquivo para ler a partir do próximo bloco de
         #bytes
         fileBytePos = os.path.getsize(settings.ARQUIVO_DE_LOG)
 
@@ -35,11 +36,11 @@ class Ddos_reporter():
         #Objeto que atualiza o arquivo de log do ddosreporter
         fw = file_writer.File_writer()
 
-        #Dicionário de bloqueados (Somente na execução atual do programa, não 
+        #Dicionário de bloqueados (Somente na execução atual do programa, não
         #contém registros anteriores)
         ipsBloqueados = {}
 
-        #Ultimos ataques sofridos 
+        #Ultimos ataques sofridos
         ultimoDoS = ''
         ultimoDDoS = ''
 
@@ -54,9 +55,9 @@ class Ddos_reporter():
 
                 #Capturando somente o(s) IP(s) de cada cliente
                 access_list = re.findall(r'(.+?) .+?\n', data)
-               
-                #Verifica se house um estouro no limite de requisições possíveis
-                #por segundo
+
+                #Verifica se house um estouro no limite de requisições
+                #possíveis por segundo
                 if len(set(access_list)) > settings.LIMITE_REQUISICOES_TOTAL:
                     ips = []
                     for ip in set(access_list):
@@ -76,9 +77,9 @@ class Ddos_reporter():
                     else:
                         if args.verbose:
                             print ip, '- Total:', total
-                
-                #Define tipo de ataque                
-                if len(ipcounter) > 0: 
+
+                #Define tipo de ataque
+                if len(ipcounter) > 0:
                     #Ataque DDoS---------------------------
                     if len(ipcounter) > 1:
                         ips = []
@@ -87,15 +88,15 @@ class Ddos_reporter():
                         ips = ', '.join(ips)
                         if settings.BLOQUEAR_ATAQUES:
                             if ultimoDDoS != ips:
-                                print '\033[1;31mAlerta de ataque DDoS\033[0m - \033[1;32mIPs:', ips,'\033[0m'
+                                print '\033[1;31mAlerta de ataque DDoS\033[0m - \033[1;32mIPs:', ips, '\033[0m'
                         else:
-                            print '\033[1;31mAlerta de ataque DDoS\033[0m - \033[1;32mIPs:', ips,'\033[0m'
+                            print '\033[1;31mAlerta de ataque DDoS\033[0m - \033[1;32mIPs:', ips, '\033[0m'
                         ultimoDDoS = ips
 
                         #Bloqueando Ataque
                         if settings.BLOQUEAR_ATAQUES:
                             for ip in ipcounter:
-                                if not ipsBloqueados.has_key(ip):
+                                if not (ip in ipsBloqueados):
                                     if os.system(re.sub(r'<ip>', ip, settings.IPTABLES)) == 0:
                                         ipsBloqueados[ip] = 'Bloqueando'
                                         print 'IP {} bloqueado'.format(ip)
@@ -113,14 +114,14 @@ class Ddos_reporter():
                         #Ataque DoS------------------------
                         if settings.BLOQUEAR_ATAQUES:
                             if ultimoDoS != ipcounter[0]:
-                                print '\033[1;31mAlerta de ataque DoS\033[0m - \033[1;32mIP:', ipcounter[0],'\033[0m'
+                                print '\033[1;31mAlerta de ataque DoS\033[0m - \033[1;32mIP:', ipcounter[0], '\033[0m'
                         else:
-                            print '\033[1;31mAlerta de ataque DoS\033[0m - \033[1;32mIP:', ipcounter[0],'\033[0m'
+                            print '\033[1;31mAlerta de ataque DoS\033[0m - \033[1;32mIP:', ipcounter[0], '\033[0m'
                         ultimoDoS = ipcounter[0]
-                        
+
                         #Bloqueando Ataque
                         if settings.BLOQUEAR_ATAQUES:
-                            if not ipsBloqueados.has_key(ipcounter[0]):
+                            if not (ipcounter[0] in ipsBloqueados):
                                 if os.system(re.sub(r'<ip>', ipcounter[0], settings.IPTABLES)) == 0:
                                     ipsBloqueados[ipcounter[0]] = 'Bloqueando'
                                     print 'IP {} bloqueado'.format(ipcounter[0])
@@ -141,21 +142,21 @@ class Ddos_reporter():
 
                 #Tamanho atual do arquivo
                 fileBytePos = _file.tell()
-                
+
                 #Delay de 1 segundo até a próxima leitura
                 try:
                     time.sleep(settings.INTERVALO_TEMPO)
                 except:
                     print '\nMonitoramento finalizado'
                     exit()
-            
+
     def print_settings(self):
         '''
         Prints the actual configuration of DDoSReporter
         '''
         print '\n\033[1;31m ATENÇÃO - EXECUTE COMO SUPERUSUÁRIO (ROOT)\033[0;33m\n'
         print '\033[0;36m Versão:\033[0;33m', get_version()
-        print '\033[0;36m Arquivo de log:\033[0;33m',settings.ARQUIVO_DE_LOG
+        print '\033[0;36m Arquivo de log:\033[0;33m', settings.ARQUIVO_DE_LOG
         sysadms = []
         for email in settings.SYSADM:
             sysadms.append(email)
@@ -169,7 +170,7 @@ class Ddos_reporter():
             print '\033[0;36m Regra iptables:\033[0;33m', settings.IPTABLES
         print '\033[0m'
 
-if __name__== "__main__":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', dest='verbose', action="store_true", help='Prints every access', default=False)
     args = parser.parse_args()

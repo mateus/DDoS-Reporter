@@ -1,5 +1,6 @@
 VERSION = (1, 0, 0, 'BETA')
 
+
 def get_version():
     '''
     Gets the actual version of DDoSReporter

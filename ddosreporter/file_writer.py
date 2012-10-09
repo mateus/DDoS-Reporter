@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from datetime import datetime
+
 
 class File_writer():
     '''
@@ -11,7 +12,7 @@ class File_writer():
         '''
         Writes in the log file the new blocked IPs
 
-        Args: 
+        Args:
             data (str) - Data to append in the log file
         '''
         today = datetime.now()
@@ -33,4 +34,5 @@ class File_writer():
         if second < 10:
             second = '0{}'.format(second)
         with open('ddosreporter.log', 'a') as f:
-            f.write('{}/{}/{} {}:{}:{} - {}'.format(day, month, year, hour, minute, second, data))
+            f.write('{}/{}/{} {}:{}:{} - {}'.format(
+                day, month, year, hour, minute, second, data))
