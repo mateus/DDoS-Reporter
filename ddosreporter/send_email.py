@@ -4,6 +4,7 @@ import getpass
 import smtplib
 import settings
 import re
+import sys
 
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
@@ -100,10 +101,10 @@ class Send_Email():
 
                     print 'Email enviado para {} sobre o ataque dos IPs: {}'.format(email, ipEnviar)
                 except:
-                    print 'Falha ao enviar email'
+                    sys.stderr.write('Falha ao enviar email')
                 finally:
                     server.close()
         elif len(settings.EMAIL_PASSWORD) == 0:
-            print 'Email para enviar os alertas ainda não foi configurado. Verifique o arquivo settings.py'
+            sys.stderr.write('Email para enviar os alertas ainda não foi configurado. Verifique o arquivo settings.py')
         else:
-            print 'Falha nas variáveis de email informadas. Verifique o arquivo settings.py.'
+            sys.stderr.write('Falha nas variáveis de email informadas. Verifique o arquivo settings.py.')

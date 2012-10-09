@@ -8,6 +8,7 @@ import settings
 import os
 import argparse
 import file_writer
+import sys
 
 from multiprocessing import Process
 from version import get_version
@@ -147,7 +148,7 @@ class Ddos_reporter():
                 try:
                     time.sleep(settings.INTERVALO_TEMPO)
                 except:
-                    print '\nMonitoramento finalizado'
+                    sys.stderr.write('\nMonitoramento finalizado\n')
                     exit()
 
     def print_settings(self):
