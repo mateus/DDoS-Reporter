@@ -148,7 +148,7 @@ class Ddos_reporter():
                 try:
                     time.sleep(settings.INTERVALO_TEMPO)
                 except:
-                    sys.stderr.write('\nMonitoramento finalizado\n')
+                    print '\nMonitoramento finalizado\n'
                     exit()
 
     def print_settings(self):

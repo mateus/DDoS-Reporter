@@ -65,7 +65,7 @@ class Send_Email():
                         message.append(
                             '\n\nO IP foi bloquado seguindo a regra de iptables \"{}\".'.format(settings.IPTABLES))
                     message.append(
-                        '\n\niptables -D INPUT <numero>\tEsta mensagem foi gerada automaticamente pelo sistema, não responda este e-mail.')
+                        '\n\n\tEsta mensagem foi gerada automaticamente pelo sistema, não responda este e-mail.')
                     message = ''.join(message)
                     msg.attach(MIMEText(message))
                 elif atk == 1:
@@ -100,11 +100,27 @@ class Send_Email():
                         ipEnviar = ', '.join(ipEnviar)
 
                     print 'Email enviado para {} sobre o ataque dos IPs: {}'.format(email, ipEnviar)
-                except:
-                    sys.stderr.write('Falha ao enviar email')
+                except SMTPServerDisconnected:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Servidor desconectado.')
+                except SMTPRecipientsRefused:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Destinatários recusados.')
+                except SMTPResponseException:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Falha durante o recebimento de resposta.')
+                except SMTPAuthenticationError:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Falha com a autentificação do email.')
+                except SMTPConnectError:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Falha ao se conectar com o servidor.')
+                except SMTPDataError:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Servidor recusou a mensagem enviada.')
+                except SMTPHeloError:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Servidor recusou mensagem de HELO')
+                except SMTPSenderRefused:
+                    sys.stderr.write('ERRO: Falha ao enviar email. Falha com endereço de origem')
+                except SMTPException:
+                    sys.stderr.write('ERRO: Falha ao enviar email.')
                 finally:
                     server.close()
         elif len(settings.EMAIL_PASSWORD) == 0:
-            sys.stderr.write('Email para enviar os alertas ainda não foi configurado. Verifique o arquivo settings.py')
+            sys.stderr.write('ERRO: Email para enviar os alertas ainda não foi configurado. Verifique o arquivo settings.py')
         else:
-            sys.stderr.write('Falha nas variáveis de email informadas. Verifique o arquivo settings.py.')
+            sys.stderr.write('ERRO: Falha nas variáveis de email informadas. Verifique o arquivo settings.py.')
