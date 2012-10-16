@@ -11,7 +11,7 @@ EMAIL_PASSWORD = ('email@gmail.com', 'senha')
 SYSADM = ('ddosreporter@gmail.com', )
 
 #Limite de requisições para um único IP
-LIMITE_REQUISICOES_POR_IP = 2
+LIMITE_REQUISICOES_POR_IP = 150
 
 #Limite de requisições distintas que o servidor pode suportar
 LIMITE_REQUISICOES_TOTAL = 180

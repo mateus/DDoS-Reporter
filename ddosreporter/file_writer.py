@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 from datetime import datetime
 
 
@@ -36,3 +38,5 @@ class File_writer():
         with open('ddosreporter.log', 'a') as f:
             f.write('{}/{}/{} {}:{}:{} - {}'.format(
                 day, month, year, hour, minute, second, data))
+
+        os.chmod('ddosreporter.log', 0644)  # permisões para o arquivo de log

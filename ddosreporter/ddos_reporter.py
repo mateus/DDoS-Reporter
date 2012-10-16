@@ -9,6 +9,7 @@ import os
 import argparse
 import file_writer
 import sys
+import signal
 
 from multiprocessing import Process
 from version import get_version
@@ -27,6 +28,7 @@ class Ddos_reporter():
         Starts monitoring by capturing data from the log access
         '''
         print '\nMonitorando...'
+
         #Capturando tamanho do arquivo para ler a partir do próximo bloco de
         #bytes
         fileBytePos = os.path.getsize(settings.ARQUIVO_DE_LOG)
@@ -144,10 +146,10 @@ class Ddos_reporter():
                 #Tamanho atual do arquivo
                 fileBytePos = _file.tell()
 
-                #Delay de 1 segundo até a próxima leitura
+                #Delay de x segundo(s) até a próxima leitura
                 try:
                     time.sleep(settings.INTERVALO_TEMPO)
-                except:
+                except KeyboardInterrupt:
                     print '\nMonitoramento finalizado\n'
                     exit()
 
