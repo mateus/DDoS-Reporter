@@ -8,7 +8,7 @@ SEND_EMAIL = False
 EMAIL_PASSWORD = ('email@gmail.com', 'senha')
 
 #Lista de emails de SYSADMs
-SYSADM = ('ddosreporter@gmail.com', )
+SYSADM = ('sysadm@gmail.com', )
 
 #Limite de requisições para um único IP
 LIMITE_REQUISICOES_POR_IP = 150
