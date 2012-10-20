@@ -1,18 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import send_email
-import time
-import re
-import settings
-import os
+#Author: Mateus Ferreira Silva <mtsferreirasilva@gmail.com>
+
 import argparse
 import file_writer
-import sys
+import os
+import re
+import send_email
+import settings
 import signal
+import sys
+import time
 
-from multiprocessing import Process
 from version import get_version
+from multiprocessing import Process
 
 
 class Ddos_reporter():
@@ -47,6 +49,9 @@ class Ddos_reporter():
         ultimoDoS = ''
         ultimoDDoS = ''
 
+        #Expressão regular
+        regex = re.compile(r'(.+?) .+?\n')
+
         while True:
             with open(settings.ARQUIVO_DE_LOG, 'r') as _file:
                 #Posicionando para ler a partir do byte anterior
@@ -57,7 +62,7 @@ class Ddos_reporter():
                 # data = data.split('\n')
 
                 #Capturando somente o(s) IP(s) de cada cliente
-                access_list = re.findall(r'(.+?) .+?\n', data)
+                access_list = re.findall(regex, data)
 
                 #Verifica se house um estouro no limite de requisições
                 #possíveis por segundo

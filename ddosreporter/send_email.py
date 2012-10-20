@@ -1,14 +1,16 @@
 # -*- coding: cp860 -*-
 
+#Author: Mateus Ferreira Silva <mtsferreirasilva@gmail.com>
+
 import getpass
-import smtplib
-import settings
 import re
+import settings
+import smtplib
 import sys
 
+from email.Utils import formatdate
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
-from email.Utils import formatdate
 
 
 class Send_Email():

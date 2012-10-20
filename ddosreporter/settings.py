@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+#Author: Mateus Ferreira Silva <mtsferreirasilva@gmail.com>
+
 #Envia emails para os SYSADMs cadastrados a cada alerta de ataque detectado
 #True para enviar emails, False para não enviar
 SEND_EMAIL = False
