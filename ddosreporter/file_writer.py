@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+#Author: Mateus Ferreira Silva <mtsferreirasilva@gmail.com>
+
 import os
 
 from datetime import datetime
