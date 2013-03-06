@@ -7,7 +7,7 @@
 SEND_EMAIL = False
 
 #Email(gmail) e senha do email que enviará o alerta de ataques (servidor)
-EMAIL_PASSWORD = ('email@gmail.com', 'senha')
+EMAIL_PASSWORD = ('sysadm@gmail.com', 'senha')
 
 #Lista de emails de SYSADMs
 SYSADM = ('sysadm@gmail.com', )

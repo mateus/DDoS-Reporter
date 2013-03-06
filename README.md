@@ -39,3 +39,11 @@ Como usar
 2º - Execute o arquivo <i>ddos_reporter.py</i>
 
 Estes arquivos estão localizados na pasta <i>ddosreporter</i>
+
+## Screenshots
+
+![ft1](https://raw.github.com/mtsferreirasilva/DDoS-Reporter/master/samples/imagens/ft1.png)
+![ft2](https://raw.github.com/mtsferreirasilva/DDoS-Reporter/master/samples/imagens/ft2.png)
+![ft3](https://raw.github.com/mtsferreirasilva/DDoS-Reporter/master/samples/imagens/ft3.png)
+![ft4](https://raw.github.com/mtsferreirasilva/DDoS-Reporter/master/samples/imagens/ft4.png)
+![ft5](https://raw.github.com/mtsferreirasilva/DDoS-Reporter/master/samples/imagens/ft5.png)
